@@ -213,13 +213,14 @@ namespace ConsoleApp1
         static void Main(string[] args)
         {
             Console.OutputEncoding = System.Text.Encoding.UTF8;
-            Console.InputEncoding = System.Text.Encoding.UTF8;
+            Console.InputEncoding = System.Text.Encoding.Unicode;
 
             LoadDictionaries();
 
             bool exitApp = false;
             while (!exitApp)
             {
+                Console.Clear();
                 Menu.ShowMainMenu();
                 Console.Write("Select an option: ");
                 string choice = Console.ReadLine();
@@ -239,6 +240,7 @@ namespace ConsoleApp1
                         break;
                     default:
                         Console.WriteLine("Invalid choice. Please try again.");
+                        PauseForUser();
                         break;
                 }
             }
@@ -254,6 +256,7 @@ namespace ConsoleApp1
             if (string.IsNullOrEmpty(fromLang) || string.IsNullOrEmpty(toLang))
             {
                 Console.WriteLine("Language names cannot be empty!");
+                PauseForUser();
                 return;
             }
 
@@ -261,6 +264,7 @@ namespace ConsoleApp1
             dictionaries.Add(newDict);
             SaveDictionaries();
             Console.WriteLine($"Dictionary '{newDict.Name}' successfully created and saved!");
+            PauseForUser();
         }
 
         static void SelectAndWorkWithDictionary()
@@ -268,6 +272,7 @@ namespace ConsoleApp1
             if (dictionaries.Count == 0)
             {
                 Console.WriteLine("No dictionaries available. Please create at least one.");
+                PauseForUser();
                 return;
             }
 
@@ -281,6 +286,7 @@ namespace ConsoleApp1
             if (!int.TryParse(Console.ReadLine(), out int index) || index < 1 || index > dictionaries.Count)
             {
                 Console.WriteLine("Invalid number.");
+                PauseForUser();
                 return;
             }
 
@@ -289,6 +295,7 @@ namespace ConsoleApp1
 
             while (!backToMain)
             {
+                Console.Clear();
                 Menu.ShowDictionaryMenu(currentDict.Name);
                 Console.Write("Select a sub-menu option: ");
                 string choice = Console.ReadLine();
@@ -297,20 +304,38 @@ namespace ConsoleApp1
                 {
                     case "1":
                         Console.Write("Enter word: ");
-                        string word = Console.ReadLine();
+                        string word = Console.ReadLine()?.Trim();
                         Console.Write("Enter the first translation variant: ");
-                        string trans = Console.ReadLine();
-                        currentDict.AddWord(word, new List<string> { trans });
-                        SaveDictionaries();
+                        string trans = Console.ReadLine()?.Trim();
+
+                        if (!string.IsNullOrEmpty(word) && !string.IsNullOrEmpty(trans))
+                        {
+                            currentDict.AddWord(word, new List<string> { trans });
+                            SaveDictionaries();
+                        }
+                        else
+                        {
+                            Console.WriteLine("Word or translation cannot be empty!");
+                        }
+                        PauseForUser();
                         break;
 
                     case "2":
                         Console.Write("Enter existing word: ");
-                        string w2 = Console.ReadLine();
+                        string w2 = Console.ReadLine()?.Trim();
                         Console.Write("Enter additional translation: ");
-                        string t2 = Console.ReadLine();
-                        currentDict.AddTranslation(w2, t2);
-                        SaveDictionaries();
+                        string t2 = Console.ReadLine()?.Trim();
+
+                        if (!string.IsNullOrEmpty(w2) && !string.IsNullOrEmpty(t2))
+                        {
+                            currentDict.AddTranslation(w2, t2);
+                            SaveDictionaries();
+                        }
+                        else
+                        {
+                            Console.WriteLine("Word or translation cannot be empty!");
+                        }
+                        PauseForUser();
                         break;
 
                     case "3":
@@ -320,6 +345,7 @@ namespace ConsoleApp1
                         string newW = Console.ReadLine();
                         currentDict.ChangeWord(oldW, newW);
                         SaveDictionaries();
+                        PauseForUser();
                         break;
 
                     case "4":
@@ -331,6 +357,7 @@ namespace ConsoleApp1
                         string newT = Console.ReadLine();
                         currentDict.ChangeTranslation(w4, oldT, newT);
                         SaveDictionaries();
+                        PauseForUser();
                         break;
 
                     case "5":
@@ -338,6 +365,7 @@ namespace ConsoleApp1
                         string w5 = Console.ReadLine();
                         currentDict.RemoveWord(w5);
                         SaveDictionaries();
+                        PauseForUser();
                         break;
 
                     case "6":
@@ -347,22 +375,26 @@ namespace ConsoleApp1
                         string t6 = Console.ReadLine();
                         currentDict.RemoveTranslation(w6, t6);
                         SaveDictionaries();
+                        PauseForUser();
                         break;
 
                     case "7":
                         Console.Write("Enter word to search: ");
                         string w7 = Console.ReadLine();
                         currentDict.SearchWord(w7);
+                        PauseForUser();
                         break;
 
                     case "8":
                         Console.Write("Enter word to export: ");
                         string w8 = Console.ReadLine();
                         currentDict.ExportWord(w8);
+                        PauseForUser();
                         break;
 
                     case "9":
                         currentDict.Show();
+                        PauseForUser();
                         break;
 
                     case "0":
@@ -371,9 +403,16 @@ namespace ConsoleApp1
 
                     default:
                         Console.WriteLine("Invalid choice.");
+                        PauseForUser();
                         break;
                 }
             }
+        }
+
+        static void PauseForUser()
+        {
+            Console.WriteLine("\nPress any key to continue...");
+            Console.ReadKey();
         }
 
         static void SaveDictionaries()
