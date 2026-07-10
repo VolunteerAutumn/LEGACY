@@ -6,7 +6,10 @@ using System.Text.Json;
 
 // === I M P O R T A N T ===
 // I sent this task to you cuz I didn't know what to submit to SMTP
+// while I did use ai to format my code and help me fix some bugs, around 90% of the code was written by me personally
+// And I am more than proud
 // It's also not my fault I didn;t know what to submit to smtp as when I opened the task it just showed the c# exam tasks
+// glhf (watch the videoproof it's workig if smth fails)
 
 namespace QuizApplication
 {
@@ -90,7 +93,108 @@ namespace QuizApplication
                 SaveData();
             }
 
-            if (!_quizzes.Any())
+            // Seed Biology Quiz
+            if (!_quizzes.Any(q => q.Title.Equals("Biology", StringComparison.OrdinalIgnoreCase)))
+            {
+                var biologyQuiz = new Quiz { Title = "Biology" };
+                biologyQuiz.Questions.Add(new Question
+                {
+                    Text = "Which of the following are considered 'powerhouses of the cell' where ATP production occurs?",
+                    Options = new List<string> { "Nucleus", "Mitochondria", "Ribosomes", "Golgi Apparatus" },
+                    CorrectOptionIndices = new List<int> { 1 }
+                });
+                biologyQuiz.Questions.Add(new Question
+                {
+                    Text = "Which base pairs are found in DNA? (Select ALL that apply)",
+                    Options = new List<string> { "Adenine", "Thymine", "Uracil", "Guanine" },
+                    CorrectOptionIndices = new List<int> { 0, 1, 3 }
+                });
+                biologyQuiz.Questions.Add(new Question
+                {
+                    Text = "What is the primary gas produced as a byproduct of photosynthesis?",
+                    Options = new List<string> { "Carbon Dioxide", "Nitrogen", "Oxygen", "Hydrogen" },
+                    CorrectOptionIndices = new List<int> { 2 }
+                });
+                _quizzes.Add(biologyQuiz);
+            }
+
+            // Seed History Quiz
+            if (!_quizzes.Any(q => q.Title.Equals("History", StringComparison.OrdinalIgnoreCase)))
+            {
+                var historyQuiz = new Quiz { Title = "History" };
+                historyQuiz.Questions.Add(new Question
+                {
+                    Text = "Who was the first President of the United States?",
+                    Options = new List<string> { "Thomas Jefferson", "Abraham Lincoln", "George Washington", "John Adams" },
+                    CorrectOptionIndices = new List<int> { 2 }
+                });
+                historyQuiz.Questions.Add(new Question
+                {
+                    Text = "Which empires fought in the Punic Wars? (Select ALL that apply)",
+                    Options = new List<string> { "Roman Republic", "Carthage", "Persian Empire", "Ancient Greece" },
+                    CorrectOptionIndices = new List<int> { 0, 1 }
+                });
+                historyQuiz.Questions.Add(new Question
+                {
+                    Text = "In which year did World War II end?",
+                    Options = new List<string> { "1918", "1939", "1945", "1950" },
+                    CorrectOptionIndices = new List<int> { 2 }
+                });
+                _quizzes.Add(historyQuiz);
+            }
+
+            // Seed Geography Quiz
+            if (!_quizzes.Any(q => q.Title.Equals("Geography", StringComparison.OrdinalIgnoreCase)))
+            {
+                var geographyQuiz = new Quiz { Title = "Geography" };
+                geographyQuiz.Questions.Add(new Question
+                {
+                    Text = "What is the capital city of Australia?",
+                    Options = new List<string> { "Sydney", "Melbourne", "Canberra", "Brisbane" },
+                    CorrectOptionIndices = new List<int> { 2 }
+                });
+                geographyQuiz.Questions.Add(new Question
+                {
+                    Text = "Which of the following countries share a land border with Brazil? (Select ALL that apply)",
+                    Options = new List<string> { "Argentina", "Colombia", "Chile", "Peru" },
+                    CorrectOptionIndices = new List<int> { 0, 1, 4 }
+                });
+                geographyQuiz.Questions.Add(new Question
+                {
+                    Text = "Which river is known as the longest river in the world?",
+                    Options = new List<string> { "Amazon River", "Nile River", "Yangtze River", "Mississippi River" },
+                    CorrectOptionIndices = new List<int> { 1 }
+                });
+                _quizzes.Add(geographyQuiz);
+            }
+
+            // Seed Pokemon Quiz
+            if (!_quizzes.Any(q => q.Title.Equals("Pokemon", StringComparison.OrdinalIgnoreCase)))
+            {
+                var pokemonQuiz = new Quiz { Title = "Pokemon" };
+                pokemonQuiz.Questions.Add(new Question
+                {
+                    Text = "Which of the following are Starter Pokémon from the Kanto Region (Gen 1)? (Select ALL that apply)",
+                    Options = new List<string> { "Bulbasaur", "Pikachu", "Charmander", "Squirtle" },
+                    CorrectOptionIndices = new List<int> { 0, 2, 3 }
+                });
+                pokemonQuiz.Questions.Add(new Question
+                {
+                    Text = "What type is the Pokémon 'Gyarados'?",
+                    Options = new List<string> { "Water / Dragon", "Water / Flying", "Pure Water", "Water / Dark" },
+                    CorrectOptionIndices = new List<int> { 1 }
+                });
+                pokemonQuiz.Questions.Add(new Question
+                {
+                    Text = "How many Eeveelutions (evolutions of Eevee) exist as of Generation 8/9?",
+                    Options = new List<string> { "3", "6", "8", "9" },
+                    CorrectOptionIndices = new List<int> { 2 }
+                });
+                _quizzes.Add(pokemonQuiz);
+            }
+
+            // Fallback legacy demo quiz initialization if database is entirely fresh
+            if (!_quizzes.Any(q => q.Title.Equals("General Knowledge", StringComparison.OrdinalIgnoreCase)))
             {
                 var demoQuiz = new Quiz { Title = "General Knowledge" };
                 for (int i = 1; i <= 20; i++)
@@ -103,8 +207,9 @@ namespace QuizApplication
                     });
                 }
                 _quizzes.Add(demoQuiz);
-                SaveData();
             }
+
+            SaveData();
         }
 
         #endregion
@@ -411,7 +516,6 @@ namespace QuizApplication
             Console.Write("Admin Password: ");
             string adminPass = Console.ReadLine();
 
-            // Simple validation rule matching the seeded user profile
             if (adminUser.ToLower() == "admin" && _users.Any(u => u.Login.ToLower() == "admin" && u.Password == adminPass))
             {
                 AdminDashboard();
@@ -445,7 +549,6 @@ namespace QuizApplication
 
         private static void AdminCreateQuiz()
         {
-            Console.Clear();
             Console.Write("Enter the Title for the new Quiz Section: ");
             string title = Console.ReadLine();
 
@@ -489,7 +592,8 @@ namespace QuizApplication
                 Console.WriteLine("2. Clear all questions");
                 Console.Write("Selection: ");
 
-                if (Console.ReadLine() == "1")
+                string selection = Console.ReadLine();
+                if (selection == "1")
                 {
                     Console.Write("Enter Question Statement: ");
                     string qText = Console.ReadLine();
@@ -519,7 +623,7 @@ namespace QuizApplication
                     Console.WriteLine("Question saved successfully!");
                     Console.ReadKey();
                 }
-                else if (Console.ReadLine() == "2")
+                else if (selection == "2")
                 {
                     targetQuiz.Questions.Clear();
                     SaveData();
